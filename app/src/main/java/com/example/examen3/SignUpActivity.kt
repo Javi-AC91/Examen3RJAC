@@ -19,12 +19,17 @@ class SignUpActivity : AppCompatActivity() {
         val etContrasena = findViewById<EditText>(R.id.etNuevaContrasena)
         val btnRegistrarse = findViewById<Button>(R.id.btnRegistrarse)
 
-        btnRegistrarse.setOnClickListener {
-            val usuario = etUsuario.text.toString().trim()
-            val contrasena = etContrasena.text.toString().trim()
+        binding.btnRegistrarse.setOnClickListener {
+            val usuario = binding.etNuevoUsuario.text.toString().trim()
+            val contrasena = binding.etNuevaContrasena.text.toString().trim()
 
             if (usuario.isEmpty() || contrasena.isEmpty()) {
                 Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (dbHelper.existeUsuario(usuario)) {
+                Toast.makeText(this, "El usuario ya está registrado", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
