@@ -9,17 +9,30 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var dbHelper: DBHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        dbHelper = DBHelper(this)
+
+        binding.btnIniciarSesion.setOnClickListener {
+            val usuario = binding.etUsuario.text.toString().trim()
+            val contrasena = binding.etContrasena.text.toString().trim()
+
+            if (dbHelper.validarCredenciales(usuario, contrasena)) {
+                val intent = Intent(this, ProfileActivity::class.java)
+                intent.putExtra("usuario", usuario)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Credenciales no son correctas", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        findViewById<Button>(R.id.btnIrRegistro).setOnClickListener {
+        binding.btnIrRegistro.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
     }
